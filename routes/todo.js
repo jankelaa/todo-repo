@@ -35,14 +35,13 @@ router.post('/create', verifyAccessToken, async (req, res) => {
 /* Delete todo item with ID. */
 router.post('/delete', verifyAccessToken, async (req, res) => {
     try {
-        const todo = (req.body);
-        const found = await Todo.findOne({ where: { id: todo.id } })
-        if(!found) return res.status(404).send(`Todo ${todo.id} not found.`);
-        if(found.userId!=req.payload.aud) return res.status(403).send('Unauthorized access.');
+        const oneTodo = await Todo.findOne({ where: { id: req.body.id } })
+        if(!oneTodo) return res.status(404).send(`Todo ${req.body.id} not found.`);
+        if(oneTodo.userId!=req.payload.aud) return res.status(403).send('Unauthorized access.');
 
-        const count = await Todo.destroy({ where: { id: todo.id } });
+        const count = await Todo.destroy({ where: { id: oneTodo.id } });
         if (count > 0)
-            return res.json(`Deleted todo ${todo.id}.`);
+            return res.json(`Deleted todo ${oneTodo.id}.`);
 
     } catch (err) {
         return res.status(500).json(err);
