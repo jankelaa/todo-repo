@@ -50,17 +50,17 @@ router.post('/delete', verifyAccessToken, async (req, res) => {
 
 router.get('/set', verifyAccessToken, async (req, res) => {
     try {
-        const found = await Todo.findOne({ where: { id: req.query.id } })
-        if(!found) return res.status(404).send(`Todo ${req.query.id} not found.`);
-        if(found.userId!=req.payload.aud) return res.status(403).send('Unauthorized access.');
+        const oneTodo = await Todo.findOne({ where: { id: req.query.id } })
+        if(!oneTodo) return res.status(404).send(`Todo ${req.query.id} not found.`);
+        if(oneTodo.userId!=req.payload.aud) return res.status(403).send('Unauthorized access.');
 
         await Todo.update({ flag: true }, {
             where: {
-                id: req.query.id
+                id: oneTodo.id
             }
         })
 
-        res.json(`Set flag for todo ${req.query.id}.`);
+        res.json(`Set flag for todo ${oneTodo.id}.`);
     } catch (err) {
         return res.status(500).json(err);
     }
